@@ -16,13 +16,21 @@ app.get("/", (req, res) => {
 });
 
 // === OTP Route ===
+const db = require("./firebase");
+
 app.post("/send-otp", async (req, res) => {
   const { email } = req.body;
 
   if (!email) return res.status(400).json({ error: "Email is required" });
 
   const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-  saveOTP(email, otp); // save in memory
+  const createdAt = Date.now();
+
+  // Save OTP to Firestore
+  await db.collection("otps").doc(email).set({
+    otp,
+    createdAt,
+  });
 
   const html = `
     <h3>OTP Verification - MyCitiverse</h3>
@@ -45,21 +53,45 @@ app.post("/send-otp", async (req, res) => {
 });
 
 // verify OTP
-app.post("/verify-otp", (req, res) => {
+app.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
 
   if (!email || !otp) {
     return res.status(400).json({ error: "Email and OTP required" });
   }
 
-  const isValid = verifyOTP(email, otp);
+  try {
+    const doc = await db.collection("otps").doc(email).get();
 
-  if (isValid) {
+    if (!doc.exists) {
+      return res.status(400).json({ error: "OTP not found or expired" });
+    }
+
+    const data = doc.data();
+    const storedOtp = data.otp;
+    const createdAt = data.createdAt;
+
+    const now = Date.now();
+    const age = now - createdAt;
+
+    if (age > 5 * 60 * 1000) {
+      await db.collection("otps").doc(email).delete(); // Expired
+      return res.status(400).json({ error: "OTP expired" });
+    }
+
+    if (String(storedOtp) !== String(otp)) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+
+    // OTP is valid
+    await db.collection("otps").doc(email).delete(); // One-time use
     return res.status(200).json({ message: "OTP verified successfully" });
-  } else {
-    return res.status(400).json({ error: "Invalid or expired OTP" });
+  } catch (error) {
+    console.error("OTP verify error:", error);
+    return res.status(500).json({ error: "Something went wrong" });
   }
 });
+
 
 
 // ✅ Start the server
