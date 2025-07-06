@@ -22,7 +22,7 @@ function verifyOTP(email, inputOtp) {
     return false;
   }
 
-  const isMatch = otp === inputOtp;
+  const isMatch = otp.toString() === inputOtp.toString();
   if (isMatch) otpStore.delete(email); // one-time use
   return isMatch;
 }

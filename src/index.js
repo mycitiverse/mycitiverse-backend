@@ -38,13 +38,13 @@ app.post("/send-otp", async (req, res) => {
   });
 
   if (success) {
-    res.status(200).json({ message: "OTP sent successfully", otp }); // Only return OTP for testing
+    res.status(200).json({ message: "OTP sent successfully" }); // Only return OTP for testing
   } else {
     res.status(500).json({ error: "Failed to send OTP" });
   }
 });
 
-// save OTP
+// verify OTP
 app.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
 
