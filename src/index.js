@@ -36,8 +36,13 @@ app.post("/send-otp", async (req, res) => {
   });
 
   if (success) {
-    res.status(200).json({ message: "OTP sent successfully", otp }); // return `otp` only for testing
+    res.status(200).json({ message: "OTP sent successfully", otp }); // Only return OTP for testing
   } else {
     res.status(500).json({ error: "Failed to send OTP" });
   }
+});
+
+// ✅ Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
