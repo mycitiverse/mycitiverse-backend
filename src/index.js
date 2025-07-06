@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const sendEmail = require("./utils/emailSender");
+const { saveOTP, verifyOTP } = require("./otpStore");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,7 @@ app.post("/send-otp", async (req, res) => {
   if (!email) return res.status(400).json({ error: "Email is required" });
 
   const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+  saveOTP(email, otp); // save in memory
 
   const html = `
     <h3>OTP Verification - MyCitiverse</h3>
@@ -41,6 +43,24 @@ app.post("/send-otp", async (req, res) => {
     res.status(500).json({ error: "Failed to send OTP" });
   }
 });
+
+// save OTP
+app.post("/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP required" });
+  }
+
+  const isValid = verifyOTP(email, otp);
+
+  if (isValid) {
+    return res.status(200).json({ message: "OTP verified successfully" });
+  } else {
+    return res.status(400).json({ error: "Invalid or expired OTP" });
+  }
+});
+
 
 // ✅ Start the server
 app.listen(PORT, () => {
