@@ -23,6 +23,9 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/", otpRoutes);
 app.use("/api", emailRoutes);
+app.get('/warmup', (req, res) => {
+  res.status(200).send("Server is awake");
+});
 
 // Start Server
 app.listen(PORT, () => {
