@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://mycitiverse.vercel.app"], // replace with your actual frontend
+    origin: ["http://localhost:3000", "https://www.mycitiverse.com"],
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
   }));

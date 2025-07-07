@@ -28,7 +28,7 @@ exports.sendWelcomeEmail = async (req, res) => {
       </p>
 
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://mycitiverse.vercel.app" target="_blank" style="background-color: #FFD700; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">
+        <a href="https://www.mycitiverse.com" target="_blank" style="background-color: #FFD700; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">
           🚀 Explore Now
         </a>
       </div>
