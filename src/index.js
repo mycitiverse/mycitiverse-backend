@@ -3,7 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const otpRoutes = require("./routes/otpRoutes");
-const signupRoutes = require("./routes/signupRoutes");
+const emailRoutes = require("./routes/emailRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,9 +15,11 @@ app.get("/", (req, res) => {
   res.send("MyCitiverse Email Backend is Running");
 });
 
+// Routes
 app.use("/", otpRoutes);
-app.use("/", signupRoutes);
+app.use("/api", emailRoutes);
 
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
